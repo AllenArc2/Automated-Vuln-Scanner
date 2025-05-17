@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vulnerability Scanner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #f4f4f4;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        pre {
+            text-align: left;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 80%;
+            margin: auto;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Automated Vulnerability Scanner</h1>
+    <p>Enter Target IP or Domain:</p>
+    <input type="text" id="target" placeholder="e.g. scanme.nmap.org">
+    <button onclick="startScan()">Scan</button>
+    <h2>Results:</h2>
+    <pre id="results">Waiting for scan...</pre>
+
+    <script>
+        function startScan() {
+            let target = document.getElementById("target").value;
+            if (!target) {
+                alert("Please enter a target!");
+                return;
+            }
+
+            document.getElementById("results").innerText = "Scanning... Please wait.";
+
+            fetch('/scan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ target: target })
+            })
+            .then(response => response.json())
+            .then(data => document.getElementById("results").innerText = JSON.stringify(data, null, 2))
+            .catch(error => document.getElementById("results").innerText = "Error: " + error);
+        }
+    </script>
+</body>
+</html>
